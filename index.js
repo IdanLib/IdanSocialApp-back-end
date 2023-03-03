@@ -37,7 +37,17 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
-app.use(cors()); //all incoming requests will be allowed
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+); //all incoming requests will be allowed
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
 
 //File storage configurations
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
