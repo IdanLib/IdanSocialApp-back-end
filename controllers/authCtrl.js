@@ -31,7 +31,6 @@ export const register = async (req, res) => {
     impressions: Math.floor(Math.random() * 10000),
   });
 
-  //«Promise,undefined,void» Returns undefined if used with callback or a Promise otherwise.
   const savedUser = await newUser.save({
     validateBeforeSave: true,
   });
@@ -42,25 +41,21 @@ export const register = async (req, res) => {
 //User login
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  try {
-    const user = await UserModel.findOne({ email: email });
+  const user = await UserModel.findOne({ email: email });
 
-    if (!user) {
-      return res.status(400).json({ msg: "User does not exist." });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ msg: "Passwords do not match." });
-    }
-
-    //passwords match - create jwt
-    const token = jsonwebtoken.sign({ id: user._id }, process.env.JWT_SECRET);
-    //delete password before returning user document to front-end
-    delete user.password;
-
-    return res.status(200).json({ token, user });
-  } catch (error) {
-    console.log(error);
+  if (!user) {
+    return res.status(400).json({ msg: "User does not exist." });
   }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return res.status(400).json({ msg: "Passwords do not match." });
+  }
+
+  //passwords match - create jwt
+  const token = jsonwebtoken.sign({ id: user._id }, process.env.JWT_SECRET);
+  //delete password before returning user document to front-end
+  delete user.password;
+
+  return res.status(200).json({ token, user });
 };

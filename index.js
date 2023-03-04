@@ -49,13 +49,14 @@ app.use((req, res, next) => {
   next();
 });
 
-//File storage configurations
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
+app.use(errorHandler); //error handler
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "index.html"));
 });
 
+//File storage configurations
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/assets");
@@ -77,7 +78,6 @@ app.use("/posts", postRoutes); //routes for posts
 app.use("*", (req, res) => {
   return res.sendFile(path.join(__dirname, "views", "404.html"));
 }); //not found handler
-app.use(errorHandler); //error handler
 
 //start db connection
 const start = async () => {
