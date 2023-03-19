@@ -59,30 +59,25 @@ app.get("/", (req, res) => {
 });
 
 //File storage configurations
-// import { v2 as cloudinary } from "cloudinary";
-// import { CloudinaryStorage } from "multer-storage-cloudinary";
-
 cloudinary.config({
   cloud_name: "ddszkagqm",
   api_key: "719452596442917",
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+const extRegex = /(\.png)|(\.jpg)|(\.jpeg)/i;
+
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  folder: "friends-of-idan-app",
-  allowedFormats: ["jpg", "png", "jpeg"],
-  use_filename: true,
+  params: async (req, file) => {
+    console.log(file);
+    return {
+      allowedFormats: ["jpg", "png", "jpeg"],
+      folder: "friends-of-idan-app",
+      public_id: file.originalname.replace(extRegex, ""),
+    };
+  },
 });
-
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "public/assets");
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, file.originalname);
-//   },
-// });
 
 const upload = multer({ storage });
 
