@@ -9,6 +9,8 @@ import multer from "multer";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 //importing routes
 import authRoutes from "./routes/authRoutes.js";
@@ -57,14 +59,31 @@ app.get("/", (req, res) => {
 });
 
 //File storage configurations
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/assets");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
+// import { v2 as cloudinary } from "cloudinary";
+// import { CloudinaryStorage } from "multer-storage-cloudinary";
+
+cloudinary.config({
+  cloud_name: "ddszkagqm",
+  api_key: "719452596442917",
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  folder: "friends-of-idan-app",
+  allowedFormats: ["jpg", "png", "jpeg"],
+  use_filename: true,
+});
+
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "public/assets");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname);
+//   },
+// });
+
 const upload = multer({ storage });
 
 //Routes with files
