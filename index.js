@@ -70,7 +70,6 @@ const extRegex = /(\.png)|(\.jpg)|(\.jpeg)/i;
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
-    console.log(file);
     return {
       allowedFormats: ["jpg", "png", "jpeg"],
       folder: "friends-of-idan-app",
@@ -95,7 +94,7 @@ app.use("*", (req, res) => {
 
 //start db connection
 const start = async () => {
-  const port = process.env.PORT || 6001;
+  const port = process.env.PORT || 3001;
   try {
     //start db connection
     connectDb(process.env.MONGO_URI);
